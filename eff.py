@@ -1,8 +1,15 @@
 
+file = open("eff_large_wordlist.txt", "r")
+passphrases = []
 
-file = open(r"C:\Users\vsvir\Documents\scripts\pwdhelper\eff_large_wordlist.txt","r")
-print (file.read())
-file.close
+# Loop to process the wordlist and append to a Py list (passphrases)
+# Using for loop means that you don't need f.close() as the loop closes it
+
+for x in file:
+    s = x.split()
+    words = s[1]
+    passphrases.append(words)
+    #print(passphrases)
 
 
 
