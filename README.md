@@ -14,6 +14,7 @@ There will eventually be a "Passphrase" function which allows the user to genera
 There are a few bits that I need to figure out on my own to make this a bit nicer, and I will get round to these. They are:
 
 1. Add in my work with the passphrase function.
-2. Allow the user to specify how many digits and punctuation characters they want in their password.
+2. ~~Allow the user to specify how many digits and punctuation characters they want in their password.~~
 3. Add a menu option to integrate everything together and make it easier to read and navigate through for the user. 
 4. Allow the user to copy any of those passwords generated to the clipboard.
+5. Improve error checking and checks to see whether the script is being run directly.
