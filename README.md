@@ -15,5 +15,5 @@ There are a few bits that I need to figure out on my own to make this a bit nice
 2. ~~Allow the user to specify how many digits and punctuation characters they want in their password.~~
 3. ~~Add a menu option to integrate everything together and make it easier to read and navigate through for the user.~~ 
 4. Allow the user to copy any of those passwords generated to the clipboard.
-5. Allow the user to re-print the last passwords generated in the terminal using the tool.
+5. ~~Allow the user to re-print the last passwords generated in the terminal using the tool.~~
 6. Improve error checking and checks to see whether the script is being run directly.
