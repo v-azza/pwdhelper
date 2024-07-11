@@ -8,6 +8,7 @@ def randomize_password(password):
     random.shuffle(password_list)
     return "".join(password_list)
 
+
 def generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, password_length):
     char = string.ascii_letters #define the usable set of characters for password from string module
     passwords = []
@@ -29,17 +30,44 @@ def generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, p
     return passwords
 
 
-#User input
-n_of_digits =  int(input("How many numbers 0-9 does each of your passwords require? "))
-n_punctuation_char = int(input("How many special characters does each of your passwords require? "))
-n_passwords = int(input("How many passwords do you require? "))
-password_length = int(input("Please give the password length required: "))
+# Main function to handle user choices
+def main():
 
+    while True:
+        print("")
+        print("\n1. Create standard password")
+        print("2. Create passphrase")
+        print("3. Print last password(s) generated")
+        print("4. Exit")
 
-if n_of_digits + n_punctuation_char > password_length:
-    print("Error: The sum of digits and special characters exceeds the password length.")
-else:
-    passwords = generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, password_length)
-    for index, password in enumerate(passwords):
-        print(f"Password {index + 1} generated: {password}")
+        choice = input("\nEnter your choice (1-4): ").strip()
         
+        if choice == "1":
+            #User input
+            n_of_digits =  int(input("How many numbers 0-9 does each of your passwords require? "))
+            n_punctuation_char = int(input("How many special characters does each of your passwords require? "))
+            n_passwords = int(input("How many passwords do you require? "))
+            password_length = int(input("Please give the password length required: "))
+            
+            if n_of_digits + n_punctuation_char > password_length:
+                print("Error: The sum of digits and special characters exceeds the password length.")
+            else:
+                passwords = generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, password_length)
+                for index, password in enumerate(passwords):
+                    print(f"Password {index + 1} generated: {password}")
+        
+        elif choice == "2":
+            print("Passphrase generation not implemented yet.")
+            
+        elif choice == "3":
+            print("Not built yet.")
+            
+        elif choice == "4":
+            print("Quitting...")
+            break
+        
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
