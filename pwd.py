@@ -135,6 +135,7 @@ def main():
             n_words = int(input("How many words should the passphrase contain? "))
             passphrase = create_passphrase(wordlist, n_words) #pass the wordlist 
             print(f"Passphrase: {passphrase}")
+            last_generated_passwords = [passphrase] #store passphrase for later
             
         elif choice == "3":
             if last_generated_passwords:
