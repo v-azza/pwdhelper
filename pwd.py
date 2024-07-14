@@ -132,9 +132,9 @@ def main():
             last_generated_passwords = create_standard_password()
         
         elif choice == "2":
-            n_words = int(input("How many words should the passphrase contain? "))
+            n_words = int(input("\nHow many words should the passphrase contain? "))
             passphrase = create_passphrase(wordlist, n_words) #pass the wordlist 
-            print(f"Passphrase: {passphrase}")
+            print(f"\nPassphrase: {passphrase}")
             last_generated_passwords = [passphrase] #store passphrase for later
             
         elif choice == "3":
@@ -142,54 +142,13 @@ def main():
                 for index, password in enumerate(last_generated_passwords):
                     print(f"Password {index + 1} generated: {password}")
             else:
-                print("No passwords generated yet.")
+                print("\nNo passwords generated yet.")
             
         elif choice == "4":
-            print("Not built yet.")
+            print("\nNot built yet.")
             
         elif choice == "5":
-            print("Quitting...")
-            break
-        
-        else:
-            print("Invalid choice. Please try again.")
-
-if __name__ == "__main__":
-    main() # type: ignore
-    wordlist_filepath = 'eff_large_wordlist.txt'
-    wordlist = read_wordlist(wordlist_filepath)
-    last_generated_passwords = None 
-
-    while True:
-        print("")
-        print("\n1. Create standard password")
-        print("2. Create passphrase")
-        print("3. Print last password(s) generated")
-        print("4. Copy password(s) generated to your clipboard")
-        print("5. Exit")
-
-        choice = input("\nEnter your choice (1-4): ").strip()
-        
-        if choice == "1":
-            last_generated_passwords = create_standard_password()
-        
-        elif choice == "2":
-            n_words = int(input("How many words should the passphrase contain? "))
-            passphrase = create_passphrase(wordlist, n_words) #pass the wordlist 
-            print(f"Passphrase: {passphrase}")
-            
-        elif choice == "3":
-            if last_generated_passwords:
-                for index, password in enumerate(last_generated_passwords):
-                    print(f"Password {index + 1} generated: {password}")
-            else:
-                print("No passwords generated yet.")
-            
-        elif choice == "4":
-            print("Not built yet.")
-            
-        elif choice == "5":
-            print("Quitting...")
+            print("\nQuitting...")
             break
         
         else:
