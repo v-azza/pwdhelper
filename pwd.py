@@ -46,14 +46,17 @@ def create_standard_password(): #function to generate password for OPTION 1, for
             print(f"Password {index + 1} generated: {password}")
         return passwords
 
+
 def read_wordlist(filepath):
     with open(filepath, 'r') as file:
         words = [line.split()[1] for line in file] #checking for each word in the wordlist
     return words
 
+
 def create_passphrase(wordlist, n_words=4): #function to generate passphrase for OPTION 2
     passphrase = ''.join(random.choice(wordlist) for _ in range(n_words))
     return passphrase
+
 
 # Main function to handle user choices
 def main():
@@ -96,6 +99,7 @@ def main():
         
         else:
             print("Invalid choice. Please try again.")
+
 
 if __name__ == "__main__":
     main() # type: ignore
