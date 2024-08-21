@@ -5,7 +5,7 @@ This utility is designed to be a simple password generator, which works offline.
 ## Overview
 This script has been created to help users generate passwords without being connected to the internet. This makes use of the in-built Python modules 'random' and 'string'. 
 
-There will eventually be a "Passphrase" function which allows the user to generate passphrases with the use of the [Electronic Frontier Foundations' Dice-Generated Passphrases](https://www.eff.org/dice) [list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt). This is a list that is created by Joseph Bonneau. And he has written a [deep dive](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) about passphrase security, and the methodology and criteria he used to create these EFF wordlists. Currently this wordlist sits in the directory for ease of access.
+There is a "Passphrase" function which allows the user to generate passphrases with the use of the [Electronic Frontier Foundations' Dice-Generated Passphrases](https://www.eff.org/dice) [list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt). This is a list that is created by Joseph Bonneau. And he has written a [deep dive](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) about passphrase security, and the methodology and criteria he used to create these EFF wordlists. Currently this wordlist sits in the directory for ease of access.
 
 
 ## Dependencies
