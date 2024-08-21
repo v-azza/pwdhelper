@@ -1,7 +1,7 @@
-import random, string
+import random, string, pyperclip
 
 """
-A small utility to help you generate passwords locally, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
+A small utility to help you generate passwords locally using command line, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
 
 Location for eff wordlist: https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
 """
@@ -50,7 +50,7 @@ def create_standard_password():
             print(f"Password {index + 1} generated: {password}")
         return passwords
 
-#function to read the wordlist file and process the file into a Python list
+#function to read the wordlist file and process the file into a Python list 
 def read_wordlist(filepath):
     with open(filepath, 'r') as file:
         words = [line.split()[1] for line in file] #checking for each word in the wordlist
@@ -61,7 +61,7 @@ def create_passphrase(wordlist, n_words=4):
     passphrase = ''.join(random.choice(wordlist) for _ in range(n_words))
     return passphrase
 
-#main function to handle user choices
+#main function to handle user choices 
 def main():
     wordlist_filepath = 'eff_large_wordlist.txt'
     wordlist = read_wordlist(wordlist_filepath)
@@ -94,8 +94,13 @@ def main():
                 print("\nNo passwords generated yet.")
             
         elif choice == "4":
-            print("\nNot built yet.")
-            
+            if last_generated_passwords:
+                all_passwords = "\n".join(last_generated_passwords)
+                pyperclip.copy(all_passwords)
+                print("\nPassword(s) copied to clipboard")
+            else:
+                print("\nNo passwords generated yet.")
+                
         elif choice == "5":
             print("\nQuitting...")
             break
