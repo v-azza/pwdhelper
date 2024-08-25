@@ -31,7 +31,7 @@ def generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, p
 
         passwords.append(randomize_password(password))    
 
-    return passwords 
+    return passwords
 
 #function to generate password for OPTION 1, for given user inputs
 def create_standard_password(): 
@@ -57,10 +57,33 @@ def read_wordlist(filepath):
     return words
 
 #function to generate passphrase for OPTION 2, for given user inputs
-def create_passphrase(wordlist, n_words=4): 
-    passphrase = ''.join(random.choice(wordlist) for _ in range(n_words))
+def create_passphrase(wordlist): 
+    
+    n_of_digits = int(input("How many numbers 0-9 should your passphrase include? "))
+    n_punctuation = int(input("How many special characters do you want your passphrase to include? "))
+    n_words = int(input("How many words from the wordlist should the passphrase contain? "))
+    separator = input("What will be used to separate each word within the passphrase (Leave this blank for nothing): ")
+    
+    #Generate the words for the passphrase
+    passphrase_words = separator.join(random.choice(wordlist) for i in range(n_words))
+    
+    passphrase_list = list(passphrase_words)
+    
+    #add digits at random positions within the passphrase
+    for i in range(n_of_digits):
+        position = random.randint(0, len(passphrase_list))
+        passphrase_list.insert(position, random.choice(string.digits))
+        
+    #add punctuation at random positions within the passphrase
+    for i in range(n_punctuation):
+        position = random.randint(0, len(passphrase_list))
+        passphrase_list.insert(position, random.choice(string.punctuation))
+    
+    #convert list back into string
+    passphrase = ''.join(passphrase_list)
+    
     return passphrase
-
+    
 #main function to handle user choices 
 def main():
     wordlist_filepath = 'eff_large_wordlist.txt'
@@ -81,10 +104,8 @@ def main():
             last_generated_passwords = create_standard_password()
         
         elif choice == "2":
-            n_words = int(input("\nHow many words should the passphrase contain? "))
-            passphrase = create_passphrase(wordlist, n_words) #pass the wordlist 
-            print(f"\nPassphrase: {passphrase}")
-            last_generated_passwords = [passphrase] #store passphrase for later
+            last_generated_passwords = [create_passphrase(wordlist)]
+            print(f"\nPassphrase: {last_generated_passwords[0]}")
             
         elif choice == "3":
             if last_generated_passwords:
