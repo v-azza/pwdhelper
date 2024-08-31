@@ -1,7 +1,7 @@
 import random, string, pyperclip
 
 """
-A small utility to help you generate passwords locally using command line, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
+An (improved!) small utility to help you generate passwords locally using command line, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
 
 Location for eff wordlist: https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
 """
