@@ -9,7 +9,7 @@ There is a "Passphrase" function which allows the user to generate passphrases w
 
 
 ## Dependencies
-### Python3 modules:
+### Python3 modules/libraries:
 - random (Built-in)
 - string (Built-in)
 - [pyperclip](https://pypi.org/project/pyperclip/)
@@ -24,3 +24,4 @@ There are a few bits that I need to figure out on my own to make this a bit nice
 4. ~~Allow the user to copy any of those passwords generated to the clipboard.~~
 5. ~~Allow the user to re-print the last passwords generated in the terminal using the tool.~~
 6. Improve error checking and checks to see whether the script is being run directly.
+7. Edit the entire program to improve on; cryptographically strong random selections, error handling, user-friendliness and clipboard copying.
