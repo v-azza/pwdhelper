@@ -46,10 +46,10 @@ def get_user_input(prompt: str, validator=None, error_message: str = "Invalid in
         print(error_message)
         
 def interactive_mode():
-    mode = get_user_input("Choose mode (password/passphrase): ",
-                          lambda x: x.lower() in ["password", "passphrase"])
+    mode = get_user_input("Choose mode (password [pwd]/passphrase [pp]): ",
+                          lambda x: x.lower() in ["password", "pwd", "passphrase", "pp"])
     
-    if mode.lower() == "password":
+    if mode.lower() in ["password", "pwd"]:
         length = int(get_user_input("Enter password length: ", lambda x: x.isdigit() and int(x) > 0))
         n_digits = int(get_user_input("Enter number of digits: ", lambda x: x.isdigit() and int(x) >= 0))
         n_special = int(get_user_input("Enter number of special characters: ", lambda x: x.isdigit() and int(x) >= 0))
@@ -76,7 +76,7 @@ def interactive_mode():
         
 def main():
     parser = argparse.ArgumentParser(description="Generate secure passwords or passphrases.")
-    parser.add_argument("--mode", choices=["password", "passphrase"],help="Generation mode")
+    parser.add_argument("--mode", choices=["password", "pwd", "passphrase", "pp"],help="Generation mode")
     parser.add_argument("--length", type=int, help="Password length")
     parser.add_argument("--n-digits", type=int, help="Number of digits")
     parser.add_argument("--n-special", type=int, help="Number of special characters")
@@ -90,14 +90,14 @@ def main():
         interactive_mode()
     else:
         try:
-            if args.mode == "password":
+            if args.mode in ["password", "pwd"]:
                 if not all([args.length, args.n_digits is not None, args.n_special is not None]):
                     raise ValueError("Password mode requires --length, --n-digits, and --n-special")
                 password = generate_password(args.length, args.n_digits, args.n_special)
                 print(f"Generated password: {password}")
                 pyperclip.copy(password)
                 print("Password copied to clipboard.")
-            elif args.mode == "passphrase":
+            elif args.mode in ["passphrase", "pp"]:
                 if not all([args.n_words, args.n_digits is not None, args.n_special is not None]):
                     raise ValueError("Passphrase mode requires --n-words, --n-digits, and --n-special")
                 wordlist = read_wordlist(args.wordlist)
@@ -114,4 +114,3 @@ def main():
             
 if __name__ == "__main__":
     main()
-    
