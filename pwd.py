@@ -1,134 +1,116 @@
-import random, string, pyperclip
+import random, string, secrets, argparse, sys, pyperclip
+from typing import List, Optional
 
 """
-A small utility to help you generate passwords locally using command line, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
+A small (enhanced) utility to help  you generate passwords locally using command line, through randomly generated characters or a passphrase. This can be used offline. Passphrase generation is done through a publicly available EFF wordlist.
 
 Location for eff wordlist: https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
 """
 
-#function to convert the password string into list, then apply random.shuffle from random module to prevent min_digit_index and min_punctuation_index outputs from being added sequentially into the final password output
-def randomize_password(password): 
-    password_list = list(password)
-    random.shuffle(password_list)
-    return "".join(password_list)
-
-#function to define the set of characters that will be generated when OPTION 1 is selected
-def generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, password_length):
-    char = string.ascii_letters #define the usable set of characters for password from string module
-    passwords = []
-
-    for password_index in range(n_passwords):
-        password = []
-
-        for min_digit_index in range(n_of_digits):
-            password.append(random.choice(string.digits))
-
-        for min_punctuation_index in range(n_punctuation_char):
-            password.append(random.choice(string.punctuation))
-
-        for index in range(password_length - n_of_digits - n_punctuation_char):
-            password.append(random.choice(char))
-
-        passwords.append(randomize_password(password))    
-
-    return passwords
-
-#function to generate password for OPTION 1, for given user inputs
-def create_standard_password(): 
+def generate_password(length: int, n_digits: int, n_special: int) -> str:
+    if n_digits + n_special > length:
+        raise ValueError("The sum of digits and special characters exceeds the password length.")
     
-    n_of_digits =  int(input("How many numbers 0-9 does each of your passwords require? "))
-    n_punctuation_char = int(input("How many special characters does each of your passwords require? "))
-    n_passwords = int(input("How many passwords do you require? "))
-    password_length = int(input("Please give the password length required: "))
+    password = []
+    password.extend(secrets.choice(string.digits) for i in range(n_digits))
+    password.extend(secrets.choice(string.punctuation) for i in range(n_special))
+    password.extend(secrets.choice(string.ascii_letters) for i in range(length - n_digits - n_special))
     
-    if n_of_digits + n_punctuation_char > password_length:
-        print("Error: The sum of digits and special characters exceeds the password length.")
-        return None
-    else:
-        passwords = generate_password_characters(n_of_digits, n_punctuation_char, n_passwords, password_length)
-        for index, password in enumerate(passwords):
-            print(f"Password {index + 1} generated: {password}")
-        return passwords
+    secrets.SystemRandom().shuffle(password)
+    return ''.join(password)
 
-#function to read the wordlist file and process the file into a Python list 
-def read_wordlist(filepath):
-    with open(filepath, 'r') as file:
-        words = [line.split()[1] for line in file] #checking for each word in the wordlist
-    return words
-
-#function to generate passphrase for OPTION 2, for given user inputs
-def create_passphrase(wordlist): 
-    
-    n_of_digits = int(input("How many numbers 0-9 should your passphrase include? "))
-    n_punctuation = int(input("How many special characters do you want your passphrase to include? "))
-    n_words = int(input("How many words from the wordlist should the passphrase contain? "))
-    separator = input("What will be used to separate each word within the passphrase (Leave this blank for nothing): ")
-    
-    #Generate the words for the passphrase
-    passphrase_words = separator.join(random.choice(wordlist) for i in range(n_words))
-    
-    passphrase_list = list(passphrase_words)
-    
-    #add digits at random positions within the passphrase
-    for i in range(n_of_digits):
-        position = random.randint(0, len(passphrase_list))
-        passphrase_list.insert(position, random.choice(string.digits))
+def read_wordlist(filepath: str) -> List[str]:
+    try:
+        with open(filepath, 'r') as file:
+            return [line.split()[1] for line in file]
+    except FileNotFoundError:
+        print(f"Error: Wordlist file '{filepath}' not found.")
+        sys.exit(1)
         
-    #add punctuation at random positions within the passphrase
-    for i in range(n_punctuation):
-        position = random.randint(0, len(passphrase_list))
-        passphrase_list.insert(position, random.choice(string.punctuation))
-    
-    #convert list back into string
-    passphrase = ''.join(passphrase_list)
-    
+def generate_passphrase(wordlist: List[str], n_words: int, separator: str, n_digits: int, n_special: int) -> str:
+    passphrase = separator.join(secrets.choice(wordlist) for i in range (n_words))
+    extras = ''.join(secrets.choice(string.digits) for i in range(n_digits)) + \
+             ''.join(secrets.choice(string.punctuation) for i in range(n_special))
+             
+    positions = sorted(secrets.randbelow(len(passphrase) + len(extras)) for i in range(len(extras)))
+    for pos, char in zip(positions, extras):
+        passphrase = passphrase[:pos] + char + passphrase[pos:]
+        
     return passphrase
-    
-#main function to handle user choices 
-def main():
-    wordlist_filepath = 'eff_large_wordlist.txt'
-    wordlist = read_wordlist(wordlist_filepath)
-    last_generated_passwords = None 
 
+def get_user_input(prompt: str, validator=None, error_message: str = "Invalid input. Please try again."):
     while True:
-        print("")
-        print("\n1. Create standard password")
-        print("2. Create passphrase")
-        print("3. Print last password(s) generated")
-        print("4. Copy password(s) generated to your clipboard")
-        print("5. Exit")
-
-        choice = input("\nEnter your choice (1-5): ").strip()
+        user_input = input(prompt)
+        if validator is None or validator(user_input):
+            return user_input
+        print(error_message)
         
-        if choice == "1":
-            last_generated_passwords = create_standard_password()
+def interactive_mode():
+    mode = get_user_input("Choose mode (password [pwd]/passphrase [pp]): ",
+                          lambda x: x.lower() in ["password", "pwd", "passphrase", "pp"])
+    
+    if mode.lower() in ["password", "pwd"]:
+        length = int(get_user_input("Enter password length: ", lambda x: x.isdigit() and int(x) > 0))
+        n_digits = int(get_user_input("Enter number of digits: ", lambda x: x.isdigit() and int(x) >= 0))
+        n_special = int(get_user_input("Enter number of special characters: ", lambda x: x.isdigit() and int(x) >= 0))
         
-        elif choice == "2":
-            last_generated_passwords = [create_passphrase(wordlist)]
-            print(f"\nPassphrase: {last_generated_passwords[0]}")
+        try:
+            password = generate_password(length, n_digits, n_special)
+            print(f"Generated password: {password}")
+            pyperclip.copy(password)
+            print("Password copied to clipboard.")
+        except ValueError as e:
+            print(f"Error: {e}")
             
-        elif choice == "3":
-            if last_generated_passwords:
-                for index, password in enumerate(last_generated_passwords):
-                    print(f"Password {index + 1} generated: {password}")
-            else:
-                print("\nNo passwords generated yet.")
-            
-        elif choice == "4":
-            if last_generated_passwords:
-                all_passwords = "\n".join(last_generated_passwords)
-                pyperclip.copy(all_passwords)
-                print("\nPassword(s) copied to clipboard")
-            else:
-                print("\nNo passwords generated yet.")
-                
-        elif choice == "5":
-            print("\nQuitting...")
-            break
+    else: # passphrase mode
+        wordlist = read_wordlist("eff_large_wordlist.txt")
+        n_words = int(get_user_input("Enter number of words: ", lambda x: x.isdigit() and int(x) > 0))
+        separator = input("Enter word separator (press Enter for space): ") or " "
+        n_digits = int(get_user_input("Enter number of digits: ", lambda x: x.isdigit() and int(x) >= 0)) 
+        n_special = int(get_user_input("Enter number of special characters: ", lambda x: x.isdigit() and int(x) >= 0))
         
-        else:
-            print("Invalid choice. Please try again.")
-
-#if statement to let this utility become importable as a module, and executable as a standalone script
+        passphrase = generate_passphrase(wordlist, n_words, separator, n_digits, n_special)
+        print(f"Generated passphrase: {passphrase}")
+        pyperclip.copy(passphrase)
+        print("Passphrase copied to clipboard.")
+        
+def main():
+    parser = argparse.ArgumentParser(description="Generate secure passwords or passphrases.")
+    parser.add_argument("--mode", choices=["password", "pwd", "passphrase", "pp"],help="Generation mode")
+    parser.add_argument("--length", type=int, help="Password length")
+    parser.add_argument("--n-digits", type=int, help="Number of digits")
+    parser.add_argument("--n-special", type=int, help="Number of special characters")
+    parser.add_argument("--n-words", type=int, help="Number of words for passphrase")
+    parser.add_argument("--separator", help="Word separator for passphrase")
+    parser.add_argument("--wordlist", default="eff_large_wordlist.txt", help="Path to wordlist file")
+    args = parser.parse_args()
+    
+    # Check if any argument other than the default wordlist is provided
+    if all(value is None for key, value in vars(args).items() if key != 'wordlist'):
+        interactive_mode()
+    else:
+        try:
+            if args.mode in ["password", "pwd"]:
+                if not all([args.length, args.n_digits is not None, args.n_special is not None]):
+                    raise ValueError("Password mode requires --length, --n-digits, and --n-special")
+                password = generate_password(args.length, args.n_digits, args.n_special)
+                print(f"Generated password: {password}")
+                pyperclip.copy(password)
+                print("Password copied to clipboard.")
+            elif args.mode in ["passphrase", "pp"]:
+                if not all([args.n_words, args.n_digits is not None, args.n_special is not None]):
+                    raise ValueError("Passphrase mode requires --n-words, --n-digits, and --n-special")
+                wordlist = read_wordlist(args.wordlist)
+                separator = args.separator or " "
+                passphrase = generate_passphrase(wordlist, args.n_words, separator, args.n_digits, args.n_special)
+                print(f"Generated passphrase: {passphrase}")
+                pyperclip.copy(passphrase)
+                print("Passphrase copied to clipboard.")
+            else:
+                raise ValueError("Please specify --mode as either 'password' or 'passphrase'")
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+            
 if __name__ == "__main__":
-    main() # type: ignore
+    main()
