@@ -12,6 +12,9 @@ There is a "Passphrase" function which allows the user to generate passphrases w
 ### Python3 modules/libraries:
 - random (Built-in)
 - string (Built-in)
+- secrets (Built-in)
+- argparse (Built-in)
+- sys (Built-in)
 - [pyperclip](https://pypi.org/project/pyperclip/)
 
 
